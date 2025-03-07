@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-// import { NotificationException } from './application/exceptions/notification-exception';
+import { ResponseDto } from '../utils/response-dto';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -19,19 +19,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const statusCode = exception.getStatus();
     const message = exception.message || null;
 
-    const body = {
-      statusCode,
-      message,
-      timestamp: new Date().toISOString(),
-      endpoint: request.url,
-    } as Record<string, unknown>;
+    // const body = {
+    //   statusCode,
+    //   message,
+    //   timestamp: new Date().toISOString(),
+    //   endpoint: request.url,
+    // } as Record<string, unknown>;
 
-    // if (exception instanceof NotificationException) {
-    //   body.details = exception.details;
-    // }
+    const r = ResponseDto.error(message!);
 
     this.logger.warn(`${statusCode} ${message}`);
 
-    response.status(statusCode).json(body);
+    response.status(statusCode).json(r);
   }
 }

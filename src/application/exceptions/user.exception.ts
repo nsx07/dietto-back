@@ -15,14 +15,18 @@ export class UserException extends HttpException {
   }
 
   public static notFound(details?: Record<string, unknown>): UserException {
-    return new UserException('User not found', HttpStatus.NOT_FOUND, details);
+    return new UserException(
+      'Conta inexistente!',
+      HttpStatus.NOT_FOUND,
+      details,
+    );
   }
 
   public static invalidPassword(
     details?: Record<string, unknown>,
   ): UserException {
     return new UserException(
-      'Invalid password',
+      'Dados incorretos! Verifique seu e-mail e senha.',
       HttpStatus.UNAUTHORIZED,
       details,
     );
