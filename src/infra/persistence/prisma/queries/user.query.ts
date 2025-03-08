@@ -12,6 +12,7 @@ export const UserDtoQuery = {
 export const UserCredentialsDtoQuery = {
   select: {
     id: true,
+    name: true,
     email: true,
     passwordHash: true,
   },
