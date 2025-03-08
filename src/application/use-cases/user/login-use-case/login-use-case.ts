@@ -5,10 +5,32 @@ import { UserException } from '@/application/exceptions/user.exception';
 import { BcryptService } from '@/infra/security/bcrypt/bcrypt.service';
 import { UseCase } from '@/application/use-cases/use-case';
 import { ResponseDto } from '@/shared/utils/response-dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString } from 'class-validator';
+import { reverse } from '@/shared/utils/tools';
 
-export interface LoginUseCaseRequest {
+export interface IpInfo {
+  ip: string;
+  hostname: string;
+  city: string;
+  region: string;
+  country: string;
+  loc: string;
+  org: string;
+  postal: string;
+  timezone: string;
+}
+
+export class LoginUseCaseRequest {
+  @ApiProperty()
+  @IsEmail()
   email: string;
+
+  @ApiProperty()
+  @IsString()
   password: string;
+
+  ipInfo: string;
 }
 
 export interface LoginUseCaseResponse {
@@ -28,6 +50,10 @@ export class LoginUseCase
   async execute(
     request: LoginUseCaseRequest,
   ): Promise<ResponseDto<LoginUseCaseResponse>> {
+    const ipInfo: IpInfo = JSON.parse(
+      Buffer.from(reverse(request.ipInfo), 'base64').toString(),
+    );
+
     const user = await this.userService.getCredentials(request.email);
 
     if (!user) {

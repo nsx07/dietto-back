@@ -8,7 +8,7 @@ import { KeeperGuard } from './keeper/keeper.guard';
   imports: [
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '3h' },
+      signOptions: { expiresIn: new Date().getTime() + 1000 * 60 * 60 * 3 },
     }),
   ],
   providers: [

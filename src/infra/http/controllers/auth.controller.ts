@@ -7,7 +7,7 @@ import {
   SignUpUseCaseRequest,
 } from '@/application/use-cases/user/signup-use-case/signup-use-case';
 import { Public } from '@/shared/decorators/public.metadata';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Header, Headers, Post } from '@nestjs/common';
 import { ApiBody } from '@nestjs/swagger';
 
 @Controller('api/auth')
@@ -19,8 +19,14 @@ export class AuthController {
 
   @Post('login')
   @Public()
-  async login(@Body() body: LoginUseCaseRequest) {
-    return this.loginUseCase.execute(body);
+  async login(
+    @Body() body: LoginUseCaseRequest,
+    @Headers('x-origin-ip') ipInfo: string,
+  ) {
+    return this.loginUseCase.execute({
+      ...body,
+      ipInfo,
+    });
   }
 
   @Post('signup')
