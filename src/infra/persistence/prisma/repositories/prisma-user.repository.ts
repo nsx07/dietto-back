@@ -62,6 +62,7 @@ export class PrismaUserRepository implements UserRepository {
       .create({
         data: {
           name: user.name,
+          email: user.email,
           password: user.password,
           isActive: true,
           contact: {

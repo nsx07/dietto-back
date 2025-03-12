@@ -18,6 +18,7 @@ datasource db {
 model User {
   id        String   @id @default(uuid())
   name      String
+  email     String   
   password  String   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -27,6 +28,7 @@ model User {
   contact   Contact?
   nutritionist Nutritionist?
   patient    Patient?
+  // subscription Subscription[]
 
   @@map("users")
 }
@@ -112,8 +114,6 @@ model Appointment {
   @@map("appointments")
 }
 
-// Billing schema
-
 // model Plan {
 //   id          String   @id @default(uuid())
 //   name        String   @unique 
@@ -144,7 +144,7 @@ model Appointment {
 //   lastPaymentDate DateTime?
 //   nextPaymentDate DateTime?
 
-//   // user           User     @relation(fields: [userId], references: [id])
+//   user           User     @relation(fields: [userId], references: [id])
 //   plan           Plan     @relation(fields: [planId], references: [id])
 //   payments       SubscriptionPayment[]
 
