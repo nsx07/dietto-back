@@ -15,6 +15,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  NUTRITIONIST
+  PATIENT
+  ADMIN
+}
+
 model User {
   id        String   @id @default(uuid())
   name      String
@@ -24,11 +30,10 @@ model User {
   updatedAt DateTime @updatedAt
   isActive  Boolean  @default(true)
 
-  roles     UserRole[]
+  roles     Role
   contact   Contact?
   nutritionist Nutritionist?
   patient    Patient?
-  // subscription Subscription[]
 
   @@map("users")
 }
@@ -51,34 +56,26 @@ model Patient {
   @@map("patients")
 }
 
+model Specialty {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+
+  nutritionists Nutritionist[]
+
+  @@map("specialties")
+}
+
 model Nutritionist {
   id           String   @id @default(uuid())
   userId       String   @unique
   crn          String   @unique
-  specialty    String?
-  clinicAddress String?
 
   user         User     @relation(fields: [userId], references: [id])
   appointments Appointment[]
+  specialties  Specialty[]
 
   @@map("nutritionists")
-}
-
-enum Role {
-  NUTRITIONIST
-  PATIENT
-  ADMIN
-}
-
-model UserRole {
-  id     String @id @default(uuid())
-  userId String
-  role   Role
-
-  user   User   @relation(fields: [userId], references: [id])
-
-  @@unique([userId, role])
-  @@map("user_roles")
 }
 
 model Contact {
@@ -89,6 +86,13 @@ model Contact {
 
   emailConfirmed Boolean @default(false)
   phoneConfirmed Boolean @default(false)
+
+  address String? 
+  number  String?
+  city    String?
+  state   String?
+  country String? 
+  zipCode String?  
 
   user    User   @relation(fields: [userId], references: [id])
 
