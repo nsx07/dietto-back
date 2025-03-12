@@ -60,7 +60,7 @@ export class LoginUseCase
       throw UserException.notFound();
     }
 
-    if (!(await this.bCrypt.compare(request.password, user!.passwordHash))) {
+    if (!(await this.bCrypt.compare(request.password, user!.password))) {
       throw UserException.invalidPassword();
     }
 

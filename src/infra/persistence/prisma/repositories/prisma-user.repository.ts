@@ -12,36 +12,49 @@ export class PrismaUserRepository implements UserRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   async findById(id: string): Promise<UserDto | null> {
-    return this.prismaService.user.findUnique({
-      where: {
-        id,
-      },
-      ...UserDtoQuery,
-    });
+    return this.prismaService.contact
+      .findUnique({
+        where: {
+          userId: id,
+        },
+        ...UserDtoQuery,
+      })
+      .then((ctt) => (ctt ? { ...ctt.user, email: ctt.email } : null));
   }
 
   async findAll(): Promise<UserDto[]> {
-    return this.prismaService.user.findMany({
-      ...UserDtoQuery,
-    });
+    return [];
   }
 
   async getByEmail(email: string): Promise<UserDto | null> {
-    return this.prismaService.user.findUnique({
-      where: {
-        email,
-      },
-      ...UserDtoQuery,
-    });
+    return this.prismaService.contact
+      .findUnique({
+        where: {
+          email,
+        },
+        ...UserDtoQuery,
+      })
+      .then((ctt) => (ctt ? { ...ctt.user, email: ctt.email } : null));
   }
 
   async getCredentials(email: string): Promise<UserCredentialsDto | null> {
-    return this.prismaService.user.findUnique({
-      where: {
-        email,
-      },
-      ...UserCredentialsDtoQuery,
-    });
+    return this.prismaService.contact
+      .findUnique({
+        where: {
+          email,
+        },
+        ...UserCredentialsDtoQuery,
+      })
+      .then((ctt) =>
+        ctt
+          ? {
+              id: ctt.userId,
+              email: ctt.email,
+              name: ctt.user.name,
+              password: ctt.user.password,
+            }
+          : null,
+      );
   }
 
   async create(user: CreateUserDto): Promise<string> {
@@ -49,9 +62,13 @@ export class PrismaUserRepository implements UserRepository {
       .create({
         data: {
           name: user.name,
-          email: user.email,
-          passwordHash: user.password,
+          password: user.password,
           isActive: true,
+          contact: {
+            create: {
+              email: user.email,
+            },
+          },
         },
         select: {
           id: true,
@@ -61,17 +78,7 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   async save(user: User): Promise<void> {
-    await this.prismaService.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        name: user.name,
-        email: user.email,
-        passwordHash: user.passwordHash,
-        isActive: user.isActive,
-      },
-    });
+    return;
   }
 
   async delete(id: string): Promise<void> {

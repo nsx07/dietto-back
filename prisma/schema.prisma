@@ -16,30 +16,163 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  name          String
-  email         String   @unique
-  passwordHash  String
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  sessions      Session[]
-  auditLogs     AuditLog[]
-}
-
-model Session {
   id        String   @id @default(uuid())
-  userId    String
-  token     String   @unique
-  expiresAt DateTime
+  name      String
+  password  String   
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+
+  roles     UserRole[]
+  contact   Contact?
+  nutritionist Nutritionist?
+  patient    Patient?
+
+  @@map("users")
 }
 
-model AuditLog {
-  id        String   @id @default(uuid())
-  userId    String
-  action    String
-  timestamp DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
 }
+
+model Patient {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  birthDate       DateTime
+  gender          Gender   
+
+  user            User     @relation(fields: [userId], references: [id])
+  appointments    Appointment[]
+
+  @@map("patients")
+}
+
+model Nutritionist {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  crn          String   @unique
+  specialty    String?
+  clinicAddress String?
+
+  user         User     @relation(fields: [userId], references: [id])
+  appointments Appointment[]
+
+  @@map("nutritionists")
+}
+
+enum Role {
+  NUTRITIONIST
+  PATIENT
+  ADMIN
+}
+
+model UserRole {
+  id     String @id @default(uuid())
+  userId String
+  role   Role
+
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([userId, role])
+  @@map("user_roles")
+}
+
+model Contact {
+  id      String @id @default(uuid())
+  userId  String @unique
+  email   String @unique
+  phone   String? @unique
+
+  emailConfirmed Boolean @default(false)
+  phoneConfirmed Boolean @default(false)
+
+  user    User   @relation(fields: [userId], references: [id])
+
+  @@map("contacts")
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CANCELED
+  DONE
+}
+
+model Appointment {
+  id             String   @id @default(uuid())
+  nutritionistId String
+  patientId      String
+  scheduledAt    DateTime
+  status         AppointmentStatus   @default(SCHEDULED)
+
+  nutritionist   Nutritionist @relation(fields: [nutritionistId], references: [id])
+  patient        Patient      @relation(fields: [patientId], references: [id])
+
+  @@map("appointments")
+}
+
+// Billing schema
+
+// model Plan {
+//   id          String   @id @default(uuid())
+//   name        String   @unique 
+//   planCode    String   @unique
+//   description String?  
+//   price       Float    
+//   duration    Int      
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   subscriptions Subscription[]
+
+//   @@map("plans")
+// }
+
+// enum SubscriptionStatus {
+//   ACTIVE
+//   INACTIVE
+// }
+
+// model Subscription {
+//   id             String   @id @default(uuid())
+//   userId         String   
+//   planId         String
+//   startDate      DateTime @default(now())
+//   endDate        DateTime?
+//   status         SubscriptionStatus @default(INACTIVE)
+//   lastPaymentDate DateTime?
+//   nextPaymentDate DateTime?
+
+//   // user           User     @relation(fields: [userId], references: [id])
+//   plan           Plan     @relation(fields: [planId], references: [id])
+//   payments       SubscriptionPayment[]
+
+//   @@map("subscriptions")
+// }
+
+// enum PaymentStatus {
+//   PAID
+//   PENDING
+//   CANCELED
+// } 
+
+// enum PaymentMethod {
+//   CREDIT_CARD
+//   DEBIT_CARD
+//   BOLETO
+//   PIX
+// }
+
+// model SubscriptionPayment {
+//   id              String   @id @default(uuid())
+//   subscriptionId  String
+//   paymentDate     DateTime @default(now())
+//   amount          Float
+//   paymentMethod   PaymentMethod
+//   paymentStatus   PaymentStatus  @default(PENDING)
+
+//   subscription    Subscription @relation(fields: [subscriptionId], references: [id])
+
+//   @@map("payments")
+// }

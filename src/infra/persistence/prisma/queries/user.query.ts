@@ -1,19 +1,28 @@
 export const UserDtoQuery = {
   select: {
     id: true,
-    name: true,
     email: true,
-    isActive: true,
-    updatedAt: true,
-    createdAt: true,
+    user: {
+      select: {
+        id: true,
+        name: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    },
   },
 };
 
 export const UserCredentialsDtoQuery = {
   select: {
-    id: true,
-    name: true,
+    userId: true,
     email: true,
-    passwordHash: true,
+    user: {
+      select: {
+        name: true,
+        password: true,
+      },
+    },
   },
 };
