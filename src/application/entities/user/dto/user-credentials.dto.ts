@@ -4,3 +4,8 @@ export class UserCredentialsDto {
   email: string;
   password: string;
 }
+
+export class ResetUserCredentialsDto {
+  id: string;
+  password: string;
+}

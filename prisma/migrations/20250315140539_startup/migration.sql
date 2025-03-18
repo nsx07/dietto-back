@@ -16,7 +16,7 @@ CREATE TABLE "users" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "roles" "Role" NOT NULL,
+    "role" "Role" NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );

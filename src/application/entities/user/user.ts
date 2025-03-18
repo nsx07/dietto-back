@@ -1,4 +1,4 @@
-import { $Enums, Role, type User as IUser } from '@prisma/client';
+import { Role, type User as IUser } from '@prisma/client';
 
 export class User implements IUser {
   name: string;
@@ -8,5 +8,5 @@ export class User implements IUser {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
-  roles: $Enums.Role;
+  role: Role;
 }
