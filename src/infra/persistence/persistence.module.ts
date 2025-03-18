@@ -8,15 +8,16 @@ import { PrismaProvider } from './prisma/prisma-uof';
 @Module({
   providers: [
     PrismaService,
-    {
-      provide: UnitOfWork,
-      useValue: PrismaProvider,
-    },
+    PrismaProvider,
+    // {
+    //   provide: UnitOfWork,
+    //   useValue: PrismaProvider,
+    // }, nestjs cannot find the provider declarating this way. TODO: investigate why
     {
       provide: UserRepository,
       useClass: PrismaUserRepository,
     },
   ],
-  exports: [UnitOfWork, UserRepository],
+  exports: [PrismaProvider, UserRepository],
 })
 export class PersistenceModule {}

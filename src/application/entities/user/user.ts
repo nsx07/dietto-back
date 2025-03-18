@@ -1,11 +1,12 @@
-import { type User as IUser } from '@prisma/client';
+import { Role, type User as IUser } from '@prisma/client';
 
 export class User implements IUser {
   name: string;
   id: string;
   email: string;
-  passwordHash: string;
+  password: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  role: Role;
 }

@@ -21,6 +21,8 @@ export class PrismaProvider extends PrismaClient implements UnitOfWork {
   }
 
   async transaction<T>(fn: PrismaTransaction<T>) {
+    console.log('Transaction started', fn, 1);
+
     return this.$transaction(async (transactionClient) => {
       return this.asyncLocalStorage.run(transactionClient, async () => {
         try {
