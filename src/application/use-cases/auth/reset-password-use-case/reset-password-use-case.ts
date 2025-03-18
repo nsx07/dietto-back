@@ -4,6 +4,7 @@ import { IsString } from 'class-validator';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@/application/services/user/user.service';
 import { IUserService } from '@/application/services/contract/iuser.service';
+import { ResponseDto } from '@/shared/utils/response-dto';
 
 export class ResetPasswordUseCaseRequest {
   @IsString()
@@ -23,7 +24,11 @@ export interface ResetPasswordUseCaseResponse {
 
 @Injectable()
 export class ResetPasswordUseCase
-  implements UseCase<ResetPasswordUseCaseRequest, ResetPasswordUseCaseResponse>
+  implements
+    UseCase<
+      ResetPasswordUseCaseRequest,
+      ResponseDto<ResetPasswordUseCaseResponse>
+    >
 {
   constructor(
     private readonly jwt: JwtService,
@@ -32,17 +37,14 @@ export class ResetPasswordUseCase
 
   async execute(
     request: ResetPasswordUseCaseRequest,
-  ): Promise<ResetPasswordUseCaseResponse> {
+  ): Promise<ResponseDto<ResetPasswordUseCaseResponse>> {
     const tokenData = this.jwt.decode(request.token, {
       json: true,
       complete: true,
     });
 
     if (tokenData.payload.exp < Date.now()) {
-      return {
-        message: 'Token expired',
-        success: false,
-      };
+      return ResponseDto.error('Token expired');
     }
 
     await this.userService.updateUserCredentials({
@@ -50,9 +52,6 @@ export class ResetPasswordUseCase
       password: request.password,
     });
 
-    return {
-      message: 'Password reseted',
-      success: true,
-    };
+    return ResponseDto.success({ message: 'Password updated', success: true });
   }
 }

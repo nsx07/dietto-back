@@ -31,4 +31,14 @@ export class UserException extends HttpException {
       details,
     );
   }
+
+  public static emailAlreadyInUse(
+    details?: Record<string, unknown>,
+  ): UserException {
+    return new UserException(
+      'E-mail já cadastrado!',
+      HttpStatus.CONFLICT,
+      details,
+    );
+  }
 }
