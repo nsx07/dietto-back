@@ -6,6 +6,7 @@ import { CreateUserDto } from '@/application/entities/user/dto/create-user.dto';
 import { UserDto } from '@/application/entities/user/dto/user.dto';
 import { UserCredentialsDtoQuery, UserDtoQuery } from '../queries/user.query';
 import { UserCredentialsDto } from '@/application/entities/user/dto/user-credentials.dto';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
@@ -65,6 +66,7 @@ export class PrismaUserRepository implements UserRepository {
           email: user.email,
           password: user.password,
           isActive: true,
+          roles: Role.NUTRITIONIST,
           contact: {
             create: {
               email: user.email,
