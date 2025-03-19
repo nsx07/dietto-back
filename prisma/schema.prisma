@@ -70,6 +70,11 @@ model Nutritionist {
   id           String   @id @default(uuid())
   userId       String   @unique
   crn          String   @unique
+  birthDate    DateTime?
+  gender       Gender?  
+  bio          String?
+  profileImage String?
+  completedOnboarding Boolean @default(false)
 
   user         User     @relation(fields: [userId], references: [id])
   appointments Appointment[]

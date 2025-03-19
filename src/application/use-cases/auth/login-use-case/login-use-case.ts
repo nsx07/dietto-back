@@ -65,7 +65,12 @@ export class LoginUseCase
     }
 
     const token = await this.jwt.signAsync(
-      { userId: user!.id, email: user!.email, name: user!.name },
+      {
+        userId: user!.id,
+        email: user!.email,
+        name: user!.name,
+        role: user!.role,
+      },
       {
         mutatePayload: false,
       },

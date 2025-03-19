@@ -20,6 +20,7 @@ export const UserCredentialsDtoQuery = {
     email: true,
     user: {
       select: {
+        role: true,
         name: true,
         password: true,
       },

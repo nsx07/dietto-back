@@ -54,6 +54,7 @@ export class PrismaUserRepository implements UserRepository {
               email: ctt.email,
               name: ctt.user.name,
               password: ctt.user.password,
+              role: ctt.user.role,
             }
           : null,
       );
