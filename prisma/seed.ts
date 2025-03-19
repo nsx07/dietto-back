@@ -2,6 +2,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const seedSpeciality = async () => {
+  if ((await prisma.specialty.count()) > 0) return;
+
   await prisma.specialty.createMany({
     data: [
       { name: 'Educação alimentar e nutricional' },
